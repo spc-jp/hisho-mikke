@@ -450,71 +450,89 @@
   }
   .payment-wall.show { display: flex; }
   .payment-card {
-    background: var(--white);
-    border-radius: 24px;
-    padding: 36px 28px;
-    max-width: 400px;
+    background: linear-gradient(160deg, #1e2d56 0%, #141f3d 100%);
+    border: 1px solid rgba(201,162,39,0.3);
+    border-radius: 20px;
+    padding: 36px 28px 28px;
+    max-width: 360px;
     width: 100%;
     text-align: center;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
+    animation: fadeIn 0.3s ease;
   }
-  .payment-icon { font-size: 48px; margin-bottom: 16px; }
+  .payment-icon { font-size: 52px; margin-bottom: 18px; display: block; }
   .payment-title {
     font-family: 'Noto Serif JP', serif;
-    font-size: 22px;
-    color: var(--navy);
+    font-size: 19px;
+    color: #ffffff;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    line-height: 1.6;
   }
-  .payment-desc { font-size: 14px; color: var(--text-light); line-height: 1.7; margin-bottom: 24px; }
-  .payment-price {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 4px;
-  }
-  .payment-price span { font-size: 16px; }
-  .payment-price-sub { font-size: 12px; color: var(--text-light); margin-bottom: 24px; }
+  .payment-title span { color: var(--gold); display: block; font-size: 21px; }
+  .payment-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.8; margin-bottom: 24px; }
   .payment-btn {
     display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 22px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.4);
+  }
+  .payment-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.5); }
+  .pw-divider { color: rgba(255,255,255,0.25); font-size: 12px; margin: 0 0 14px; }
+  .pw-pass-label { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+  .pw-pass-input {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    color: white;
+    outline: none;
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 0.08em;
+  }
+  .pw-pass-input::placeholder { color: rgba(255,255,255,0.25); letter-spacing: 0; }
+  .pw-submit-btn {
     width: 100%;
     background: linear-gradient(135deg, var(--gold), var(--gold-light));
     color: var(--navy);
     border: none;
-    border-radius: 14px;
-    padding: 16px;
+    border-radius: 12px;
+    padding: 14px;
     font-family: 'Noto Sans JP', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    text-decoration: none;
-    margin-bottom: 12px;
     transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(201,162,39,0.35);
   }
-  .payment-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,162,39,0.4); }
-  .pw-divider { color: var(--text-light); font-size: 13px; margin: 14px 0; }
-  .pw-pass-row { display: flex; gap: 8px; }
-  .pw-pass-row input {
-    flex: 1;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 14px;
-    outline: none;
-  }
-  .pw-pass-row button {
-    background: var(--navy);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 16px;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 13px;
+  .pw-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,162,39,0.5); }
+  .pw-err { color: #ff8a80; font-size: 12px; margin-top: 8px; display: none; }
+  .pw-back {
+    display: block;
+    margin-top: 18px;
+    color: rgba(255,255,255,0.28);
+    font-size: 12px;
     cursor: pointer;
-    font-weight: 700;
+    background: none;
+    border: none;
+    font-family: 'Noto Sans JP', sans-serif;
   }
-  .pw-err { color: #c62828; font-size: 12px; margin-top: 6px; display: none; }
+  .pw-back:hover { color: rgba(255,255,255,0.6); }
 
   /* ========== HOWTO MODAL ========== */
   .howto-step {
@@ -581,7 +599,7 @@
   <div class="header-left">
     <div>
       <div class="header-logo">👔 秘書みっけ</div>
-      <div class="header-sub">AI秘書サービス｜Smile Plus Consulting</div>
+      <div class="header-sub">メール・相談・整理を、まるごとお任せ</div>
     </div>
   </div>
   <div class="header-btns">
@@ -877,17 +895,18 @@
 <div class="payment-wall" id="paymentWall">
   <div class="payment-card">
     <div class="payment-icon">👔</div>
-    <div class="payment-title">無料お試しが終了しました</div>
-    <div class="payment-desc">秘書みっけを引き続き使うには、月額プランにご加入ください。メール・相談・文章作成が無制限でお使いいただけます。</div>
-    <div class="payment-price"><span>月額</span>¥2,980<span>/月</span></div>
-    <div class="payment-price-sub">いつでも解約OK・初月から全機能使い放題</div>
-    <a class="payment-btn" href="https://buy.stripe.com/YOUR_STRIPE_LINK" target="_blank">💳 今すぐ申し込む</a>
-    <div class="pw-divider">── すでにご購入済みの方 ──</div>
-    <div class="pw-pass-row">
-      <input type="password" id="pwInput" placeholder="パスワードを入力">
-      <button onclick="checkPassword()">解除</button>
+    <div class="payment-icon">🔐</div>
+    <div class="payment-title">
+      ご利用を続けるには
+      <span>パスワードが必要です</span>
     </div>
+    <div class="payment-desc">秘書みっけは月額2,980円のサービスです。ご購入後にパスワードをお届けします。</div>
+    <a class="payment-btn" href="https://buy.stripe.com/4gMdR84augzH1yv2gAcV20l" target="_blank">🔒 安全なStripeで購入する（月額2,980円）</a>
+    <div class="pw-divider">── すでにパスワードをお持ちの方 ──</div>
+    <input class="pw-pass-input" type="password" id="pwInput" placeholder="パスワードを入力">
+    <button class="pw-submit-btn" onclick="checkPassword()">秘書を呼び出す</button>
     <div class="pw-err" id="pwErr">パスワードが違います。購入後に届くメールをご確認ください。</div>
+    <button class="pw-back" onclick="document.getElementById('paymentWall').classList.remove('show')">← 戻る</button>
   </div>
 </div>
 
@@ -896,7 +915,7 @@
 const WORKER_URL = 'https://hisho-mikke.yymmatsu.workers.dev';
 const PASSWORD = 'hisho2025';
 const MAX_FREE = 3;
-const STRIPE_URL = 'https://buy.stripe.com/YOUR_STRIPE_LINK';
+const STRIPE_URL = 'https://buy.stripe.com/4gMdR84augzH1yv2gAcV20l';
 
 let settings = JSON.parse(localStorage.getItem('hishoSettings') || '{}');
 let usageCount = parseInt(localStorage.getItem('hishoUsage') || '0');
