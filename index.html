@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>秘書みっけ｜AI秘書アプリ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-light: #243460;
+    --gold: #C9A227;
+    --gold-light: #e8c84a;
+    --bg: #f5f3ee;
+    --white: #ffffff;
+    --text: #2c2c2c;
+    --text-light: #666;
+    --border: #e0ddd8;
+    --success: #2e7d32;
+    --card-shadow: 0 2px 16px rgba(26,39,68,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ========== HEADER ========== */
+  .header {
+    background: var(--navy);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .header-logo {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 20px;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .header-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 1px;
+  }
+  .header-badge {
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .header-btns { display: flex; gap: 8px; }
+  .btn-icon {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: background 0.2s;
+  }
+  .btn-icon:hover { background: rgba(255,255,255,0.22); }
+
+  /* ========== TRIAL BANNER ========== */
+  .trial-banner {
+    background: linear-gradient(135deg, #fff8e1, #fff3cd);
+    border-bottom: 2px solid var(--gold);
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 13px;
+    color: #7a5c00;
+  }
+  .trial-banner strong { color: #5a3e00; }
+
+  /* ========== TABS ========== */
+  .tabs {
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+    position: sticky;
+    top: 57px;
+    z-index: 90;
+  }
+  .tab-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: 14px 8px 12px;
+    border: none;
+    background: none;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    color: var(--text-light);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-align: center;
+  }
+  .tab-btn .tab-icon { font-size: 18px; display: block; margin-bottom: 3px; }
+  .tab-btn.active {
+    color: var(--navy);
+    border-bottom: 3px solid var(--gold);
+    font-weight: 700;
+    background: rgba(201,162,39,0.06);
+  }
+  .tab-btn:hover:not(.active) { color: var(--navy); background: rgba(0,0,0,0.03); }
+
+  /* ========== MAIN CONTENT ========== */
+  .main { max-width: 720px; margin: 0 auto; padding: 24px 16px 80px; }
+
+  .tab-panel { display: none; animation: fadeIn 0.3s ease; }
+  .tab-panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ========== SECTION CARD ========== */
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border);
+  }
+  .card-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 17px;
+    color: var(--navy);
+    margin-bottom: 6px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-desc { font-size: 13px; color: var(--text-light); margin-bottom: 20px; line-height: 1.7; }
+
+  /* ========== FORM ELEMENTS ========== */
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; display: block; }
+  .form-hint { font-size: 11px; color: var(--text-light); margin-top: 3px; }
+
+  textarea, input[type="text"], select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: #fafaf8;
+    transition: border 0.2s;
+    resize: vertical;
+    outline: none;
+  }
+  textarea:focus, input[type="text"]:focus, select:focus {
+    border-color: var(--navy);
+    background: var(--white);
+  }
+  textarea { min-height: 100px; }
+
+  /* ========== BUTTONS ========== */
+  .btn-primary {
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,39,68,0.3); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+  }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,162,39,0.4); }
+
+  /* ========== RESULT BOX ========== */
+  .result-box {
+    background: linear-gradient(135deg, #f0f4ff, #e8f0fe);
+    border: 1.5px solid #b8c8f0;
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 20px;
+    white-space: pre-wrap;
+    line-height: 1.9;
+    font-size: 14px;
+    color: var(--text);
+    display: none;
+    position: relative;
+  }
+  .result-box.show { display: block; animation: fadeIn 0.4s ease; }
+  .result-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #4a6ab0;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: background 0.2s;
+  }
+  .copy-btn:hover { background: var(--navy-light); }
+
+  /* ========== LOADING ========== */
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 30px;
+    color: var(--text-light);
+  }
+  .loading.show { display: block; }
+  .loading-dots { font-size: 24px; animation: pulse 1.2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+  /* ========== TAB 2: CHAT ========== */
+  .chat-window {
+    background: #f8f7f4;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    height: 380px;
+    overflow-y: auto;
+    padding: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .chat-msg {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.7;
+    animation: fadeIn 0.3s ease;
+  }
+  .chat-msg.user {
+    background: var(--navy);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-msg.ai {
+    background: var(--white);
+    color: var(--text);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    white-space: pre-wrap;
+  }
+  .chat-msg.ai .msg-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+  .chat-input-row { display: flex; gap: 10px; }
+  .chat-input-row textarea {
+    flex: 1;
+    min-height: 52px;
+    max-height: 120px;
+    resize: none;
+  }
+  .chat-send-btn {
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0 20px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.2s;
+    min-width: 52px;
+    flex-shrink: 0;
+  }
+  .chat-send-btn:hover { background: var(--navy-light); }
+  .chat-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .quick-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .quick-btn {
+    background: white;
+    border: 1.5px solid var(--border);
+    color: var(--navy);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: all 0.2s;
+  }
+  .quick-btn:hover { border-color: var(--navy); background: #f0f4ff; }
+
+  /* ========== TAB 3: DOCUMENT MENU ========== */
+  .doc-menu {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .doc-menu-btn {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 12px;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    text-align: left;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .doc-menu-btn:hover, .doc-menu-btn.selected {
+    border-color: var(--navy);
+    background: #f0f4ff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26,39,68,0.1);
+  }
+  .doc-menu-btn .dm-icon { font-size: 22px; flex-shrink: 0; }
+  .doc-menu-btn .dm-text { font-size: 13px; font-weight: 700; color: var(--navy); }
+  .doc-menu-btn .dm-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+  /* ========== MOOD SELECTOR ========== */
+  .mood-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .mood-btn {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: all 0.2s;
+  }
+  .mood-btn.selected { border-color: var(--navy); background: var(--navy); color: white; }
+
+  /* ========== MODAL ========== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 30px 24px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s ease;
+  }
+  .modal-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 20px;
+    color: var(--navy);
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal-close {
+    display: block;
+    width: 100%;
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 16px;
+    color: var(--text-light);
+  }
+  .modal-close:hover { background: var(--bg); }
+
+  /* ========== PAYMENT WALL ========== */
+  .payment-wall {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,39,68,0.93);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .payment-wall.show { display: flex; }
+  .payment-card {
+    background: var(--white);
+    border-radius: 24px;
+    padding: 36px 28px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  }
+  .payment-icon { font-size: 48px; margin-bottom: 16px; }
+  .payment-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 22px;
+    color: var(--navy);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .payment-desc { font-size: 14px; color: var(--text-light); line-height: 1.7; margin-bottom: 24px; }
+  .payment-price {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .payment-price span { font-size: 16px; }
+  .payment-price-sub { font-size: 12px; color: var(--text-light); margin-bottom: 24px; }
+  .payment-btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 12px;
+    transition: all 0.2s;
+  }
+  .payment-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,162,39,0.4); }
+  .pw-divider { color: var(--text-light); font-size: 13px; margin: 14px 0; }
+  .pw-pass-row { display: flex; gap: 8px; }
+  .pw-pass-row input {
+    flex: 1;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    outline: none;
+  }
+  .pw-pass-row button {
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .pw-err { color: #c62828; font-size: 12px; margin-top: 6px; display: none; }
+
+  /* ========== HOWTO MODAL ========== */
+  .howto-step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 18px;
+    align-items: flex-start;
+  }
+  .howto-num {
+    background: var(--navy);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .howto-text { font-size: 14px; line-height: 1.7; }
+  .howto-text strong { color: var(--navy); }
+
+  /* ========== SETTINGS MODAL ========== */
+  .settings-grid { display: grid; gap: 14px; }
+
+  /* ========== FOOTER NAV (mobile) ========== */
+  @media (max-width: 540px) {
+    .tabs { top: 57px; }
+    .doc-menu { grid-template-columns: 1fr; }
+    .main { padding: 16px 12px 100px; }
+  }
+
+  /* ========== MISC ========== */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .tag {
+    display: inline-block;
+    background: rgba(26,39,68,0.08);
+    color: var(--navy);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  .alert-info {
+    background: #e8f4fd;
+    border: 1px solid #90caf9;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #1565c0;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<header class="header">
+  <div class="header-left">
+    <div>
+      <div class="header-logo">👔 秘書みっけ</div>
+      <div class="header-sub">AI秘書サービス｜Smile Plus Consulting</div>
+    </div>
+  </div>
+  <div class="header-btns">
+    <button class="btn-icon" onclick="openHowto()">使い方</button>
+    <button class="btn-icon" onclick="openSettings()">⚙ 設定</button>
+  </div>
+</header>
+
+<!-- ========== TRIAL BANNER ========== -->
+<div class="trial-banner" id="trialBanner">
+  🎁 無料お試し中: あと <strong id="trialCount">3</strong> 回使えます
+</div>
+
+<!-- ========== TABS ========== -->
+<nav class="tabs">
+  <button class="tab-btn active" onclick="switchTab(0, this)">
+    <span class="tab-icon">🌅</span>
+    朝の整理
+  </button>
+  <button class="tab-btn" onclick="switchTab(1, this)">
+    <span class="tab-icon">💬</span>
+    なんでも相談
+  </button>
+  <button class="tab-btn" onclick="switchTab(2, this)">
+    <span class="tab-icon">✍️</span>
+    文章作成
+  </button>
+</nav>
+
+<!-- ========== MAIN ========== -->
+<main class="main">
+
+  <!-- ===== TAB 0: 朝の整理 ===== -->
+  <div class="tab-panel active" id="tab0">
+    <div class="card">
+      <div class="card-title">🌅 今日の仕事を整理する</div>
+      <div class="card-desc">今日やること・気になること・体調を入力するだけ。AIが優先順位をつけて整理してくれます。</div>
+
+      <div class="form-group">
+        <label class="form-label">📋 今日やらなきゃいけないこと</label>
+        <textarea id="morningTasks" placeholder="例：〇〇さんへ見積もり送る、請求書処理、銀行行く、スタッフとMTG…
+箇条書きでもOKです" rows="5"></textarea>
+        <div class="form-hint">思いついたまま書いてOKです。整理はAIがやります。</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">🤔 気になっていること・迷っていること</label>
+        <textarea id="morningWorry" placeholder="例：来月の資金繰りが少し不安、〇〇さんへの返答をどうしようか…" rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">💪 今日の体調・気分</label>
+        <div class="mood-row">
+          <button class="mood-btn selected" onclick="selectMood(this)">😊 絶好調</button>
+          <button class="mood-btn" onclick="selectMood(this)">🙂 まあまあ</button>
+          <button class="mood-btn" onclick="selectMood(this)">😐 普通</button>
+          <button class="mood-btn" onclick="selectMood(this)">😔 ちょっと疲れ気味</button>
+          <button class="mood-btn" onclick="selectMood(this)">🤒 体調いまいち</button>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="runMorning()">
+        ✨ 今日の仕事を整理してもらう
+      </button>
+
+      <div class="loading" id="morningLoading">
+        <div class="loading-dots">💼 ···</div>
+        <div style="font-size:13px;margin-top:8px;">秘書が整理中です...</div>
+      </div>
+
+      <div class="result-box" id="morningResult">
+        <div class="result-label">📋 秘書からの今日のプラン</div>
+        <button class="copy-btn" onclick="copyResult('morningResult')">コピー</button>
+        <div id="morningResultText"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 1: なんでも相談 ===== -->
+  <div class="tab-panel" id="tab1">
+    <div class="card">
+      <div class="card-title">💬 なんでも相談する</div>
+      <div class="card-desc">仕事のこと、悩み、返答の仕方…なんでも聞いてください。設定した業種・役職に合わせて答えます。</div>
+
+      <div class="quick-btns">
+        <button class="quick-btn" onclick="setQuick('メールの返し方を教えて')">📧 メール返答を教えて</button>
+        <button class="quick-btn" onclick="setQuick('値引き交渉されたときの断り方')">💰 値引き断り方</button>
+        <button class="quick-btn" onclick="setQuick('スタッフへの注意の仕方')">👥 スタッフへの伝え方</button>
+        <button class="quick-btn" onclick="setQuick('来月の資金繰りが少し心配です。何から考えたらいいですか？')">💳 資金繰り相談</button>
+        <button class="quick-btn" onclick="setQuick('モチベーションが上がらないときのアドバイスをください')">🔥 モチベUP</button>
+      </div>
+
+      <div class="chat-window" id="chatWindow">
+        <div class="chat-msg ai">
+          <div class="msg-label">👔 秘書みっけ</div>
+          こんにちは！私があなたの秘書として、仕事のご相談に対応します✨
+
+まず「⚙ 設定」から業種と役職を教えていただくと、より的確なアドバイスができます。
+何でもお気軽にどうぞ！
+        </div>
+      </div>
+
+      <div class="chat-input-row">
+        <textarea id="chatInput" placeholder="相談したいことを入力… (Ctrl+Enterで送信)" onkeydown="chatKeydown(event)" rows="2"></textarea>
+        <button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 2: 文章作成 ===== -->
+  <div class="tab-panel" id="tab2">
+    <div class="card">
+      <div class="card-title">✍️ 文章を代わりに書いてもらう</div>
+      <div class="card-desc">書きたい文章の種類を選んで、状況を一言書くだけ。すぐ使える文章を作ります。</div>
+
+      <div class="doc-menu" id="docMenu">
+        <button class="doc-menu-btn selected" onclick="selectDoc(this, 'お礼メール', '相手・状況を一言で')">
+          <span class="dm-icon">🙏</span>
+          <div><div class="dm-text">お礼メール</div><div class="dm-sub">訪問・注文・紹介など</div></div>
+        </button>
+        <button class="doc-menu-btn" onclick="selectDoc(this, 'お断りメール', '断る内容・相手を一言で')">
+          <span class="dm-icon">🚫</span>
+          <div><div class="dm-text">お断りメール</div><div class="dm-sub">丁寧にお断りしたい</div></div>
+        </button>
+        <button class="doc-menu-btn" onclick="selectDoc(this, '見積もり送付メール', '商品・サービス・相手を一言で')">
+          <span class="dm-icon">📊</span>
+          <div><div class="dm-text">見積もり送付</div><div class="dm-sub">見積書に添えるメール</div></div>
+        </button>
+        <button class="doc-menu-btn" onclick="selectDoc(this, 'クレーム対応文', 'クレームの内容を一言で')">
+          <span class="dm-icon">🛡️</span>
+          <div><div class="dm-text">クレーム対応</div><div class="dm-sub">誠実にお詫びする</div></div>
+        </button>
+        <button class="doc-menu-btn" onclick="selectDoc(this, 'お知らせ・案内文', '内容・対象者を一言で')">
+          <span class="dm-icon">📢</span>
+          <div><div class="dm-text">お知らせ・案内</div><div class="dm-sub">顧客・スタッフへの告知</div></div>
+        </button>
+        <button class="doc-menu-btn" onclick="selectDoc(this, 'SNS投稿文', '業種・伝えたいことを一言で')">
+          <span class="dm-icon">📱</span>
+          <div><div class="dm-text">SNS投稿</div><div class="dm-sub">Facebook・Instagram対応</div></div>
+        </button>
+        <button class="doc-menu-btn" onclick="selectDoc(this, '挨拶状・あいさつ文', '場面・時期・相手を一言で')">
+          <span class="dm-icon">📝</span>
+          <div><div class="dm-text">挨拶状</div><div class="dm-sub">年賀・季節・就任など</div></div>
+        </button>
+        <button class="doc-menu-btn" onclick="selectDoc(this, '依頼・お願いメール', '何を頼みたいか・相手を一言で')">
+          <span class="dm-icon">🤝</span>
+          <div><div class="dm-text">依頼・お願い</div><div class="dm-sub">協力・資料・打合せなど</div></div>
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" id="docSituationLabel">📋 状況を一言で教えてください（お礼メール）</label>
+        <textarea id="docSituation" placeholder="例：先日の工事のお礼を山田建設の山田社長に送りたい。先週完工した現場でお世話になった。" rows="4"></textarea>
+        <div class="form-hint">固有名詞・状況を具体的に書くほど、使えるメールになります</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">📏 文章の長さ・トーン</label>
+        <select id="docTone">
+          <option value="丁寧でコンパクト（3〜5行）">丁寧でコンパクト（3〜5行）</option>
+          <option value="標準的な長さ（5〜8行）" selected>標準的な長さ（5〜8行）</option>
+          <option value="丁寧でしっかり目（8〜12行）">丁寧でしっかり目（8〜12行）</option>
+          <option value="フレンドリー・親しみやすい">フレンドリー・親しみやすい</option>
+          <option value="かしこまった丁寧語">かしこまった丁寧語</option>
+        </select>
+      </div>
+
+      <button class="btn-primary" onclick="runDocument()">
+        ✨ 文章を書いてもらう
+      </button>
+
+      <div class="loading" id="docLoading">
+        <div class="loading-dots">✍️ ···</div>
+        <div style="font-size:13px;margin-top:8px;">文章を作成中です...</div>
+      </div>
+
+      <div class="result-box" id="docResult">
+        <div class="result-label">📄 作成した文章（コピペしてそのままどうぞ）</div>
+        <button class="copy-btn" onclick="copyResult('docResult')">コピー</button>
+        <div id="docResultText"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ========== 設定モーダル ========== -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-title">⚙️ 秘書への自己紹介</div>
+    <div style="font-size:13px;color:var(--text-light);margin-bottom:20px;line-height:1.7;">
+      設定しておくと、相談や文章作成がより的確になります。
+    </div>
+
+    <div class="settings-grid">
+      <div class="form-group">
+        <label class="form-label">あなたのお名前（またはニックネーム）</label>
+        <input type="text" id="settingName" placeholder="例：田中">
+      </div>
+      <div class="form-group">
+        <label class="form-label">会社名・屋号</label>
+        <input type="text" id="settingCompany" placeholder="例：田中工務店">
+      </div>
+      <div class="form-group">
+        <label class="form-label">業種</label>
+        <select id="settingIndustry">
+          <option value="">選択してください</option>
+          <option value="製造業">製造業</option>
+          <option value="建設・工務店">建設・工務店</option>
+          <option value="飲食業">飲食業</option>
+          <option value="美容業（美容室・エステ）">美容業（美容室・エステ）</option>
+          <option value="小売業">小売業</option>
+          <option value="税理士事務所">税理士事務所</option>
+          <option value="社労士事務所">社労士事務所</option>
+          <option value="医療・クリニック">医療・クリニック</option>
+          <option value="薬局">薬局</option>
+          <option value="不動産業">不動産業</option>
+          <option value="ITサービス">ITサービス</option>
+          <option value="コンサルティング">コンサルティング</option>
+          <option value="その他サービス業">その他サービス業</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">立場・役割</label>
+        <select id="settingRole">
+          <option value="社長・代表">社長・代表</option>
+          <option value="経営者（個人事業主）">経営者（個人事業主）</option>
+          <option value="副社長・専務">副社長・専務</option>
+          <option value="部長・マネージャー">部長・マネージャー</option>
+          <option value="担当スタッフ">担当スタッフ</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">従業員数（おおよそ）</label>
+        <select id="settingSize">
+          <option value="ひとり（個人事業主）">ひとり（個人事業主）</option>
+          <option value="2〜5名">2〜5名</option>
+          <option value="6〜20名">6〜20名</option>
+          <option value="21〜50名">21〜50名</option>
+          <option value="50名以上">50名以上</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">秘書のキャラクター</label>
+        <select id="settingChar">
+          <option value="丁寧でテキパキした秘書">丁寧でテキパキした秘書</option>
+          <option value="親しみやすくフレンドリーな秘書">親しみやすくフレンドリーな秘書</option>
+          <option value="落ち着いた頼りになる秘書">落ち着いた頼りになる秘書</option>
+          <option value="明るく前向きな秘書">明るく前向きな秘書</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="saveSettings()" style="margin-top:8px;">✅ 保存して閉じる</button>
+    <button class="modal-close" onclick="closeSettings()">キャンセル</button>
+  </div>
+</div>
+
+<!-- ========== 使い方モーダル ========== -->
+<div class="modal-overlay" id="howtoModal">
+  <div class="modal">
+    <div class="modal-title">📖 秘書みっけの使い方</div>
+
+    <div class="howto-step">
+      <div class="howto-num">1</div>
+      <div class="howto-text"><strong>まず⚙設定ボタンで自己紹介</strong><br>業種・役割・名前を入れておくと、あなた専用の秘書になります。</div>
+    </div>
+    <div class="howto-step">
+      <div class="howto-num">2</div>
+      <div class="howto-text"><strong>3つの機能を使い分けます</strong><br>🌅 朝の整理 → 今日のTODOを整理してもらう<br>💬 なんでも相談 → 仕事の悩みを聞いてもらう<br>✍️ 文章作成 → メール・SNSを書いてもらう</div>
+    </div>
+    <div class="howto-step">
+      <div class="howto-num">3</div>
+      <div class="howto-text"><strong>無料で3回お試しできます</strong><br>4回目以降は月額プランにご加入ください。</div>
+    </div>
+    <div class="howto-step">
+      <div class="howto-num">4</div>
+      <div class="howto-text"><strong>生成結果はコピーしてそのまま使えます</strong><br>「コピー」ボタンで一発コピー。メールやLINEにそのまま貼れます。</div>
+    </div>
+
+    <button class="modal-close" onclick="closeHowto()">閉じる</button>
+  </div>
+</div>
+
+<!-- ========== 有料壁 ========== -->
+<div class="payment-wall" id="paymentWall">
+  <div class="payment-card">
+    <div class="payment-icon">👔</div>
+    <div class="payment-title">無料お試しが終了しました</div>
+    <div class="payment-desc">秘書みっけを引き続き使うには、月額プランにご加入ください。メール・相談・文章作成が無制限でお使いいただけます。</div>
+    <div class="payment-price"><span>月額</span>¥2,980<span>/月</span></div>
+    <div class="payment-price-sub">いつでも解約OK・初月から全機能使い放題</div>
+    <a class="payment-btn" href="https://buy.stripe.com/YOUR_STRIPE_LINK" target="_blank">💳 今すぐ申し込む</a>
+    <div class="pw-divider">── すでにご購入済みの方 ──</div>
+    <div class="pw-pass-row">
+      <input type="password" id="pwInput" placeholder="パスワードを入力">
+      <button onclick="checkPassword()">解除</button>
+    </div>
+    <div class="pw-err" id="pwErr">パスワードが違います。購入後に届くメールをご確認ください。</div>
+  </div>
+</div>
+
+<script>
+// ========== 設定・状態管理 ==========
+const WORKER_URL = 'https://yymmatsu.workers.dev/api';
+const PASSWORD = 'hisho2025';
+const MAX_FREE = 3;
+const STRIPE_URL = 'https://buy.stripe.com/YOUR_STRIPE_LINK';
+
+let settings = JSON.parse(localStorage.getItem('hishoSettings') || '{}');
+let usageCount = parseInt(localStorage.getItem('hishoUsage') || '0');
+let isPaid = localStorage.getItem('hishoPaid') === 'true';
+let chatHistory = [];
+let selectedDocType = 'お礼メール';
+let selectedMood = '😊 絶好調';
+
+// ========== 初期化 ==========
+function init() {
+  updateTrialBanner();
+  loadSettings();
+}
+
+function updateTrialBanner() {
+  if (isPaid) {
+    document.getElementById('trialBanner').style.display = 'none';
+    return;
+  }
+  const rem = Math.max(0, MAX_FREE - usageCount);
+  document.getElementById('trialCount').textContent = rem;
+  if (rem === 0) {
+    document.getElementById('trialBanner').innerHTML = '⚠️ 無料回数を使い切りました。<strong>月額プランで無制限に使えます</strong>';
+  }
+}
+
+function checkUsage() {
+  if (isPaid) return true;
+  if (usageCount >= MAX_FREE) {
+    document.getElementById('paymentWall').classList.add('show');
+    return false;
+  }
+  return true;
+}
+
+function countUsage() {
+  if (!isPaid) {
+    usageCount++;
+    localStorage.setItem('hishoUsage', usageCount);
+    updateTrialBanner();
+  }
+}
+
+// ========== API呼び出し ==========
+async function callAI(prompt) {
+  const res = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1200,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  if (!res.ok) throw new Error('API error');
+  const data = await res.json();
+  return data.content[0].text;
+}
+
+function getUserContext() {
+  const n = settings.name ? `名前：${settings.name}` : '';
+  const c = settings.company ? `会社名：${settings.company}` : '';
+  const i = settings.industry ? `業種：${settings.industry}` : '';
+  const r = settings.role ? `立場：${settings.role}` : '';
+  const s = settings.size ? `規模：${settings.size}` : '';
+  const ch = settings.char || '丁寧でテキパキした秘書';
+  return { ctx: [n,c,i,r,s].filter(Boolean).join('、'), char: ch };
+}
+
+// ========== タブ 0: 朝の整理 ==========
+async function runMorning() {
+  if (!checkUsage()) return;
+  const tasks = document.getElementById('morningTasks').value.trim();
+  if (!tasks) { alert('今日やることを入力してください'); return; }
+  const worry = document.getElementById('morningWorry').value.trim();
+  const { ctx, char } = getUserContext();
+
+  const prompt = `あなたは${char}です。
+${ctx ? `ユーザー情報：${ctx}` : ''}
+
+今日のタスク・心配・体調を整理して、以下の形式で今日のプランを作ってください。
+
+【今日のタスク】
+${tasks}
+
+【気になること・迷っていること】
+${worry || 'なし'}
+
+【体調・気分】
+${selectedMood}
+
+---
+出力フォーマット（絵文字つきで、読みやすく）：
+
+✅ 今日の優先タスク（重要度順）
+（タスクを番号つきで優先順位をつけて整理）
+
+⏰ 今日の作業の流れ（おすすめ）
+（午前・午後に分けたざっくりスケジュール）
+
+💡 秘書からのひと言アドバイス
+（体調・気になることを踏まえて、今日の心がまえや一言を温かく）
+
+📝 夕方の振り返りメモ（テンプレ）
+（今日終わったら記録するための短いテンプレ）
+
+丁寧で温かみのある日本語で、実用的に答えてください。`;
+
+  document.getElementById('morningLoading').classList.add('show');
+  document.getElementById('morningResult').classList.remove('show');
+  document.querySelector('#tab0 .btn-primary').disabled = true;
+
+  try {
+    const result = await callAI(prompt);
+    document.getElementById('morningResultText').textContent = result;
+    document.getElementById('morningResult').classList.add('show');
+    countUsage();
+  } catch(e) {
+    alert('エラーが発生しました。しばらくしてから再試行してください。');
+  } finally {
+    document.getElementById('morningLoading').classList.remove('show');
+    document.querySelector('#tab0 .btn-primary').disabled = false;
+  }
+}
+
+// ========== タブ 1: チャット ==========
+async function sendChat() {
+  if (!checkUsage()) return;
+  const input = document.getElementById('chatInput').value.trim();
+  if (!input) return;
+  const { ctx, char } = getUserContext();
+
+  appendChat('user', input);
+  document.getElementById('chatInput').value = '';
+  document.getElementById('chatSendBtn').disabled = true;
+
+  chatHistory.push({ role: 'user', content: input });
+
+  const systemPrompt = `あなたは${char}として、中小企業の経営者や従業員の仕事相談に答えます。
+${ctx ? `ユーザー情報：${ctx}` : '業種・立場は不明です。'}
+・日本語で、温かみがあり実用的な回答をしてください。
+・長すぎず、要点をわかりやすくまとめてください。
+・必要に応じて、選択肢や行動ステップを提示してください。
+・絵文字を適度に使い、読みやすくしてください。`;
+
+  const messages = [
+    { role: 'user', content: systemPrompt + '\n\n以下からチャットを始めます。' },
+    { role: 'assistant', content: 'かしこまりました。なんでもご相談ください。' },
+    ...chatHistory
+  ];
+
+  appendChatLoading();
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 800,
+        messages
+      })
+    });
+    const data = await res.json();
+    const reply = data.content[0].text;
+    removeChatLoading();
+    appendChat('ai', reply);
+    chatHistory.push({ role: 'assistant', content: reply });
+    countUsage();
+  } catch(e) {
+    removeChatLoading();
+    appendChat('ai', '⚠️ エラーが発生しました。しばらくしてから再試行してください。');
+  } finally {
+    document.getElementById('chatSendBtn').disabled = false;
+  }
+}
+
+function appendChat(role, text) {
+  const win = document.getElementById('chatWindow');
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  if (role === 'ai') {
+    div.innerHTML = `<div class="msg-label">👔 秘書みっけ</div>${escapeHtml(text).replace(/\n/g,'<br>')}`;
+  } else {
+    div.textContent = text;
+  }
+  win.appendChild(div);
+  win.scrollTop = win.scrollHeight;
+}
+
+function appendChatLoading() {
+  const win = document.getElementById('chatWindow');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ai';
+  div.id = 'chatLoading';
+  div.innerHTML = '<div class="msg-label">👔 秘書みっけ</div><span style="animation:pulse 1s infinite;display:inline-block">考え中...</span>';
+  win.appendChild(div);
+  win.scrollTop = win.scrollHeight;
+}
+
+function removeChatLoading() {
+  const el = document.getElementById('chatLoading');
+  if (el) el.remove();
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function chatKeydown(e) {
+  if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); sendChat(); }
+}
+
+function setQuick(text) {
+  document.getElementById('chatInput').value = text;
+  document.getElementById('chatInput').focus();
+}
+
+// ========== タブ 2: 文章作成 ==========
+function selectDoc(btn, type, hint) {
+  document.querySelectorAll('.doc-menu-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedDocType = type;
+  document.getElementById('docSituationLabel').textContent = `📋 状況を一言で教えてください（${type}）`;
+  document.getElementById('docSituation').placeholder = `状況を具体的に入力してください（${hint}）`;
+}
+
+async function runDocument() {
+  if (!checkUsage()) return;
+  const situation = document.getElementById('docSituation').value.trim();
+  if (!situation) { alert('状況を入力してください'); return; }
+  const tone = document.getElementById('docTone').value;
+  const { ctx, char } = getUserContext();
+
+  const prompt = `あなたは${char}です。
+${ctx ? `ユーザー情報：${ctx}` : ''}
+
+以下の内容で「${selectedDocType}」を作成してください。
+
+【状況・背景】
+${situation}
+
+【文章のトーン・長さ】
+${tone}
+
+---
+注意事項：
+・すぐにコピペして使える、完成した文章を出力してください。
+・件名が必要な場合は「件名：〇〇」を最初に入れてください。
+・余計な説明や注釈は不要です。文章本体だけ出力してください。
+・自然で丁寧な日本語ビジネス文章にしてください。
+・宛名や署名部分は【○○様】【（氏名）】などプレースホルダーにしてください。`;
+
+  document.getElementById('docLoading').classList.add('show');
+  document.getElementById('docResult').classList.remove('show');
+  document.querySelector('#tab2 .btn-primary').disabled = true;
+
+  try {
+    const result = await callAI(prompt);
+    document.getElementById('docResultText').textContent = result;
+    document.getElementById('docResult').classList.add('show');
+    countUsage();
+  } catch(e) {
+    alert('エラーが発生しました。しばらくしてから再試行してください。');
+  } finally {
+    document.getElementById('docLoading').classList.remove('show');
+    document.querySelector('#tab2 .btn-primary').disabled = false;
+  }
+}
+
+// ========== コピー ==========
+function copyResult(id) {
+  const box = document.getElementById(id);
+  const textEl = box.querySelector('[id$="Text"]') || box.querySelector('[id$="ResultText"]');
+  const text = textEl ? textEl.textContent : box.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = box.querySelector('.copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = '✅ コピーしました';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+// ========== タブ切替 ==========
+function switchTab(idx, btn) {
+  document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+}
+
+// ========== 気分選択 ==========
+function selectMood(btn) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedMood = btn.textContent;
+}
+
+// ========== 設定 ==========
+function openSettings() { document.getElementById('settingsModal').classList.add('show'); }
+function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
+function openHowto() { document.getElementById('howtoModal').classList.add('show'); }
+function closeHowto() { document.getElementById('howtoModal').classList.remove('show'); }
+
+function loadSettings() {
+  if (settings.name) document.getElementById('settingName').value = settings.name;
+  if (settings.company) document.getElementById('settingCompany').value = settings.company;
+  if (settings.industry) document.getElementById('settingIndustry').value = settings.industry;
+  if (settings.role) document.getElementById('settingRole').value = settings.role;
+  if (settings.size) document.getElementById('settingSize').value = settings.size;
+  if (settings.char) document.getElementById('settingChar').value = settings.char;
+}
+
+function saveSettings() {
+  settings = {
+    name: document.getElementById('settingName').value,
+    company: document.getElementById('settingCompany').value,
+    industry: document.getElementById('settingIndustry').value,
+    role: document.getElementById('settingRole').value,
+    size: document.getElementById('settingSize').value,
+    char: document.getElementById('settingChar').value,
+  };
+  localStorage.setItem('hishoSettings', JSON.stringify(settings));
+  closeSettings();
+  alert('✅ 設定を保存しました！');
+}
+
+// ========== パスワード解除 ==========
+function checkPassword() {
+  const val = document.getElementById('pwInput').value;
+  if (val === PASSWORD) {
+    isPaid = true;
+    localStorage.setItem('hishoPaid', 'true');
+    document.getElementById('paymentWall').classList.remove('show');
+    updateTrialBanner();
+    alert('✅ ありがとうございます！無制限でご利用いただけます🎉');
+  } else {
+    document.getElementById('pwErr').style.display = 'block';
+  }
+}
+
+// ========== モーダル外クリックで閉じる ==========
+document.getElementById('settingsModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSettings();
+});
+document.getElementById('howtoModal').addEventListener('click', function(e) {
+  if (e.target === this) closeHowto();
+});
+
+init();
+</script>
+</body>
+</html>
