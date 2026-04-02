@@ -837,6 +837,13 @@
 
     <button class="btn-primary" onclick="saveSettings()" style="margin-top:8px;">✅ 保存して閉じる</button>
     <button class="modal-close" onclick="closeSettings()">キャンセル</button>
+
+    <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:center;">
+      <button onclick="loadDemo()" style="background:none;border:none;color:#bbb;font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;text-decoration:underline;padding:4px 8px;" onmouseover="this.style.color='#888'" onmouseout="this.style.color='#bbb'">デモデータ</button>
+      <span style="color:#ddd;font-size:12px;line-height:1.8;">|</span>
+      <button onclick="clearDemo()" style="background:none;border:none;color:#bbb;font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;text-decoration:underline;padding:4px 8px;" onmouseover="this.style.color='#888'" onmouseout="this.style.color='#bbb'">デモデータクリア</button>
+    </div>
+    <div id="demoMsg" style="display:none;text-align:center;font-size:12px;margin-top:8px;padding:8px 14px;border-radius:8px;"></div>
   </div>
 </div>
 
@@ -1227,6 +1234,45 @@ function checkPassword() {
   } else {
     document.getElementById('pwErr').style.display = 'block';
   }
+}
+
+// ========== デモデータ ==========
+const DEMO_DATA = {
+  name: '田中',
+  company: '田中工務店',
+  industry: '建設・工務店',
+  role: '社長・代表',
+  size: '6〜20名',
+  char: '丁寧でテキパキした秘書',
+};
+
+function loadDemo() {
+  document.getElementById('settingName').value = DEMO_DATA.name;
+  document.getElementById('settingCompany').value = DEMO_DATA.company;
+  document.getElementById('settingIndustry').value = DEMO_DATA.industry;
+  document.getElementById('settingRole').value = DEMO_DATA.role;
+  document.getElementById('settingSize').value = DEMO_DATA.size;
+  document.getElementById('settingChar').value = DEMO_DATA.char;
+  showDemoMsg('✅ デモデータを入力しました。「保存して閉じる」を押してお試しください。', '#e8f5e9', '#2e7d32');
+}
+
+function clearDemo() {
+  document.getElementById('settingName').value = '';
+  document.getElementById('settingCompany').value = '';
+  document.getElementById('settingIndustry').value = '';
+  document.getElementById('settingRole').value = '';
+  document.getElementById('settingSize').value = '2〜5名';
+  document.getElementById('settingChar').value = '丁寧でテキパキした秘書';
+  showDemoMsg('🗑️ デモデータをクリアしました。', '#fff3e0', '#e65100');
+}
+
+function showDemoMsg(text, bg, color) {
+  const el = document.getElementById('demoMsg');
+  el.textContent = text;
+  el.style.background = bg;
+  el.style.color = color;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
 }
 
 // ========== モーダル外クリックで閉じる ==========
