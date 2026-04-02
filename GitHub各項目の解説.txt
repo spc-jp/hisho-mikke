@@ -1,0 +1,82 @@
+保存版として使えるようにまとめますね 😊
+
+────────────────────────
+General
+────────────────────────
+リポジトリの基本設定。名前の変更・削除・公開/非公開の切り替えはここ。
+
+────────────────────────
+Access（アクセス管理）
+────────────────────────
+
+Collaborators
+一緒に作業する人を招待する。メンバーの追加・削除はここ。
+
+Moderation options
+コメントや参加者を管理する。個人開発ではほぼ使わない。
+
+────────────────────────
+Code and automation（コード・自動化）
+────────────────────────
+
+Branches
+mainブランチの保護設定など。誤ってmainを消さないための設定。よしボンさんは基本触らなくてOK。
+
+Tags
+バージョン管理用のタグ設定。v1.0などのリリース管理に使う。
+
+Rules
+ブランチへのpushルールを設定。チーム開発向け。個人開発では不要。
+
+Actions
+GitHub Actionsという自動化機能の設定。ビルドやテストを自動実行できる。今は使わなくてOK。
+
+Models
+AI機能の設定。現時点では気にしなくてOK。
+
+Webhooks
+GitHubの操作をトリガーにして外部サービスに通知を送る設定。Cloudflare連携などに使うこともある。
+
+Copilot
+GitHub公式のAIコーディング支援機能の設定。
+
+Environments
+本番・テストなど環境別のデプロイ設定。チーム開発向け。
+
+Codespaces
+ブラウザ上でVSCodeが動く開発環境の設定。
+
+Pages
+GitHub Pagesの公開設定。みっけシリーズをGitHub Pagesで公開するときはここ。Cloudflare Pages連携の場合は基本触らなくてOK。
+
+────────────────────────
+Security（セキュリティ）
+────────────────────────
+
+Advanced Security
+脆弱性スキャンなどの高度なセキュリティ機能。個人開発では不要。
+
+Deploy keys
+サーバーからGitHubに接続するための鍵の管理。
+
+Secrets and variables
+APIキーなどの秘密情報を安全に保存する場所。Cloudflare WorkersのAPIキーをGitHub Actionsで使うときに登録する。
+
+────────────────────────
+Integrations（連携）
+────────────────────────
+
+GitHub Apps
+外部サービスとの連携アプリの管理。CloudflareやVercelなどの連携状況が確認できる。
+
+Email notifications
+GitHubからのメール通知の設定。
+
+────────────────────────
+よしボンさんが実際に使う項目はこの3つだけです。
+
+Collaborators → メンバー追加のとき
+Pages → GitHub Pagesで公開するとき
+Secrets and variables → APIキーを使うとき
+
+それ以外は基本触らなくてOKです 😊
