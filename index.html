@@ -160,6 +160,52 @@
   }
   .card-desc { font-size: 13px; color: var(--text-light); margin-bottom: 20px; line-height: 1.7; }
 
+  /* ========== CALENDAR SYNC (NEW) ========== */
+  .date-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .date-selector {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--navy);
+    border: none;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+  }
+  .sync-btn {
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #444;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .sync-btn:hover {
+    background: #f8f9fa;
+    border-color: #ccc;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .sync-btn img {
+    width: 16px;
+    height: 16px;
+  }
+
   /* ========== FORM ELEMENTS ========== */
   .form-group { margin-bottom: 16px; }
   .form-label { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; display: block; }
@@ -646,11 +692,19 @@
   <!-- ===== TAB 0: 朝の整理 ===== -->
   <div class="tab-panel active" id="tab0">
     <div class="card">
-      <div class="card-title">🌅 今日の仕事を整理する</div>
-      <div class="card-desc">今日やること・気になること・体調を入力するだけ。AIが優先順位をつけて整理してくれます。</div>
+      <div class="date-header">
+        <input type="date" id="targetDate" class="date-selector">
+        <button class="sync-btn" onclick="fetchGoogleCalendarDemo()">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar">
+          予定を読み込む
+        </button>
+      </div>
+
+      <div class="card-title">🌅 仕事を整理する</div>
+      <div class="card-desc">カレンダーから予定を読み込むか、今日やること・気になることを入力してください。AIが優先順位をつけて整理します。</div>
 
       <div class="form-group">
-        <label class="form-label">📋 今日やらなきゃいけないこと</label>
+        <label class="form-label">📋 やらなきゃいけないこと・スケジュール</label>
         <textarea id="morningTasks" placeholder="例：〇〇さんへ見積もり送る、請求書処理、銀行行く、スタッフとMTG…
 箇条書きでもOKです" rows="5"></textarea>
         <div class="form-hint">思いついたまま書いてOKです。整理はAIがやります。</div>
@@ -662,7 +716,7 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">💪 今日の体調・気分</label>
+        <label class="form-label">💪 今の体調・気分</label>
         <div class="mood-row">
           <button class="mood-btn selected" onclick="selectMood(this)">😊 絶好調</button>
           <button class="mood-btn" onclick="selectMood(this)">🙂 まあまあ</button>
@@ -673,7 +727,7 @@
       </div>
 
       <button class="btn-primary" onclick="runMorning()">
-        ✨ 今日の仕事を整理してもらう
+        ✨ 仕事を整理してもらう
       </button>
 
       <div class="loading" id="morningLoading">
@@ -682,7 +736,7 @@
       </div>
 
       <div class="result-box" id="morningResult">
-        <div class="result-label">📋 秘書からの今日のプラン</div>
+        <div class="result-label">📋 秘書からのプラン</div>
         <button class="copy-btn" onclick="copyResult('morningResult')">コピー</button>
         <div id="morningResultText"></div>
       </div>
@@ -939,6 +993,13 @@ let selectedMood = '😊 絶好調';
 function init() {
   updateTrialBanner();
   loadSettings();
+  
+  // 今日の日付をセット
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  document.getElementById('targetDate').value = `${yyyy}-${mm}-${dd}`;
 }
 
 function updateTrialBanner() {
@@ -970,6 +1031,33 @@ function countUsage() {
   }
 }
 
+// ========== Google Calendar Demo ==========
+function fetchGoogleCalendarDemo() {
+  const btn = document.querySelector('.sync-btn');
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = '読み込み中...';
+  btn.disabled = true;
+
+  // 実際のAPI連携の代わりに、タイムラグを作ってモックデータを挿入
+  setTimeout(() => {
+    const tasksInput = document.getElementById('morningTasks');
+    const existingVal = tasksInput.value;
+    const newTasks = "10:00 A社とオンライン打ち合わせ\n13:00 請求書作成\n15:00 現場確認";
+    
+    if(existingVal.trim() === '') {
+        tasksInput.value = newTasks;
+    } else {
+        tasksInput.value = existingVal + "\n\n" + newTasks;
+    }
+    
+    btn.innerHTML = '✅ 読み込み完了';
+    setTimeout(() => {
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+    }, 2000);
+  }, 800);
+}
+
 // ========== API呼び出し ==========
 async function callAI(prompt) {
   const res = await fetch(WORKER_URL, {
@@ -999,17 +1087,18 @@ function getUserContext() {
 // ========== タブ 0: 朝の整理 ==========
 async function runMorning() {
   if (!checkUsage()) return;
+  const targetDate = document.getElementById('targetDate').value;
   const tasks = document.getElementById('morningTasks').value.trim();
-  if (!tasks) { alert('今日やることを入力してください'); return; }
+  if (!tasks) { alert('やらなきゃいけないことを入力してください'); return; }
   const worry = document.getElementById('morningWorry').value.trim();
   const { ctx, char } = getUserContext();
 
   const prompt = `あなたは${char}です。
 ${ctx ? `ユーザー情報：${ctx}` : ''}
 
-今日のタスク・心配・体調を整理して、以下の形式で今日のプランを作ってください。
+対象日（${targetDate}）のタスク・心配・体調を整理して、以下の形式でプランを作ってください。
 
-【今日のタスク】
+【タスク・スケジュール】
 ${tasks}
 
 【気になること・迷っていること】
@@ -1021,17 +1110,17 @@ ${selectedMood}
 ---
 出力フォーマット（絵文字つきで、読みやすく）：
 
-✅ 今日の優先タスク（重要度順）
+✅ 優先タスク（重要度順）
 （タスクを番号つきで優先順位をつけて整理）
 
-⏰ 今日の作業の流れ（おすすめ）
+⏰ 作業の流れ（おすすめ）
 （午前・午後に分けたざっくりスケジュール）
 
 💡 秘書からのひと言アドバイス
-（体調・気になることを踏まえて、今日の心がまえや一言を温かく）
+（体調・気になることを踏まえて、心がまえや一言を温かく）
 
-📝 夕方の振り返りメモ（テンプレ）
-（今日終わったら記録するための短いテンプレ）
+📝 振り返りメモ（テンプレ）
+（終わったら記録するための短いテンプレ）
 
 丁寧で温かみのある日本語で、実用的に答えてください。`;
 
